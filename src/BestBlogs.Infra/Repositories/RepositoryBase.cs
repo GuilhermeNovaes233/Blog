@@ -42,8 +42,13 @@ namespace BestBlogs.Infra.Repositories
         {
             return await _dbSet.FindAsync(id);
         }
+        
+        public virtual async Task<TEntity> GetByPostIdAsync(Guid postId)
+        {
+            return await _dbSet.FindAsync(postId);
+        }
 
-        public IEnumerable<TEntity> GetAll()
+        public IEnumerable<TEntity> GetAllAsync()
         {
             return _dbSet.ToList();
         }

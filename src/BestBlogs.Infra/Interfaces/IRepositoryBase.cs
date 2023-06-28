@@ -8,8 +8,9 @@ namespace BestBlogs.Infra.Interfaces
         Task<TEntity> AddAsync(TEntity obj);
         Task<List<TEntity>> AddRangeAsync(List<TEntity> obj);
         TEntity GetById(Guid id);
+        Task<TEntity> GetByPostIdAsync(Guid postId);
         Task<TEntity> GetByIdAsync(Guid id);
-        IEnumerable<TEntity> GetAll();
+        IEnumerable<TEntity> GetAllAsync();
         void Update(TEntity obj);
         Task UpdateAsync(TEntity obj);
         void Remove(TEntity obj);

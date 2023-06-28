@@ -43,11 +43,38 @@ namespace BestBlogs.Application.AppServices
             }
         }
 
+        public async Task<Either<ErrorResponseViewModel, CommentViewModel>> GetByPostId(Guid postId)
+        {
+            try
+            {
+                var commentOnDb = await _commentRepository.GetByPostIdAsync(postId);
+                if (commentOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("Comment not found"));
+
+                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ERROR: error to get a comment by id {ex.Message}");
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>()
+                    .CustomError(new ErrorResponseViewModel(ex.Message), (int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         public async Task<Either<ErrorResponseViewModel, CommentResponseViewModel>> GetAll(CommentRequestViewModel requestViewModel)
         {
             try
             {
-                throw new NotImplementedException();
+                var commentOnDb = _commentRepository.GetAll();
+                if (commentOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
+
+                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
@@ -62,7 +89,13 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                throw new NotImplementedException();
+                var commentOnDb = await _commentRepository.AddAsync(requestViewModel);
+                if (commentOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
+
+                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
@@ -77,7 +110,13 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                throw new NotImplementedException();
+                var commentOnDb = await _commentRepository.RemoveAsync(id);
+                if (commentOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comment removed"));
+
+                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
@@ -92,7 +131,13 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                throw new NotImplementedException();
+                var commentOnDb = await _commentRepository.UpdateAsync(id);
+                if (commentOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comment updated"));
+
+                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
