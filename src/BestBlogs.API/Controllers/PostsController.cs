@@ -1,5 +1,5 @@
 ﻿using BestBlogs.Application.Interfaces;
-using BestBlogs.Application.ViewModels.Comments;
+using BestBlogs.Application.ViewModels.Posts;
 using BestBlogs.Application.ViewModels.Commons;
 using BestBlogs.Application.ViewModels.Posts;
 using Microsoft.AspNetCore.Mvc;
@@ -34,21 +34,21 @@ namespace BestBlogs.API.Controllers
         [ProducesResponseType(typeof(ErrorResponseViewModel), 404)]
         [ProducesResponseType(typeof(ErrorResponseViewModel), 500)]
         [HttpPost]
-        public async Task<IActionResult> CreateComment([FromBody] PostRequestViewModel requestModel)
-           => Return(await _postAppService.CreateComment(requestModel));
+        public async Task<IActionResult> CreatePost([FromBody] PostRequestViewModel requestModel)
+           => Return(await _postAppService.CreatePost(requestModel));
 
         [ProducesResponseType(typeof(SuccessResponseViewModel), 200)]
         [ProducesResponseType(typeof(ErrorResponseViewModel), 404)]
         [ProducesResponseType(typeof(ErrorResponseViewModel), 500)]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PostRequestViewModel requestModel)
-            => Return(await _postAppService.UpdateComment(id, requestModel));
+            => Return(await _postAppService.UpdatePost(id, requestModel));
 
         [ProducesResponseType(typeof(SuccessResponseViewModel), 200)]
         [ProducesResponseType(typeof(ErrorResponseViewModel), 404)]
         [ProducesResponseType(typeof(ErrorResponseViewModel), 500)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
-            => Return(await _postAppService.DeleteComment(id));
+            => Return(await _postAppService.DeletePost(id));
     }
 }

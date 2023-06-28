@@ -53,7 +53,7 @@ namespace BestBlogs.Application.AppServices
                 if (commentOnDb == null)
                     return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("Comment not found"));
 
-                //TODO - PRECISA CONFIGURAR O MAPPER
+                //TODO - CONFIGURAR O MAPPER
                 var vm = _mapper.Map<CommentViewModel>(commentOnDb);
 
                 return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
@@ -75,7 +75,7 @@ namespace BestBlogs.Application.AppServices
                 if (commentsOnDb == null)
                     return new Either<ErrorResponseViewModel, CommentResponseViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
 
-                //TODO - PRECISA CONFIGURAR O MAPEAMENTO
+                //TODO - CONFIGURAR O MAPEAMENTO
                 var vm = _mapper.Map<CommentResponseViewModel>(commentsOnDb);
 
                 return new Either<ErrorResponseViewModel, CommentResponseViewModel>().Ok(vm);
@@ -93,9 +93,9 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                //TODO - SERIA LEGAL VERIFICAR SE JA EXISTE NO BANCO
+                //TODO - VERIFICAR SE JA EXISTE NO BANCO
 
-                //TODO - PRECISA CONFIGURAR O MAPEAMENTO
+                //TODO - CONFIGURAR O MAPEAMENTO
                 var vm = _mapper.Map<Comment>(requestViewModel);
 
                 await _commentRepository.AddAsync(vm);
@@ -140,7 +140,7 @@ namespace BestBlogs.Application.AppServices
                 if (commentOnDb == null)
                     return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().NotFound(new ErrorResponseViewModel("No comment not found"));
 
-                //TODO - PRECISA ATUALIZAR OS VALORES PELO PASSADO NA VIEW MODEL
+                //TODO - ATUALIZAR OS VALORES PELO PASSADO NA VIEW MODEL
 
                 await _commentRepository.UpdateAsync(commentOnDb);
 

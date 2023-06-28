@@ -68,7 +68,7 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var postOnDb = await _postRepository.AddAsync(requestViewModel);
+                var postOnDb = await _postRepository.AddAsync();
                 if (postOnDb == null)
                     return new Either<ErrorResponseViewModel, PostViewModel>().NotFound(new ErrorResponseViewModel("No post created"));
 
