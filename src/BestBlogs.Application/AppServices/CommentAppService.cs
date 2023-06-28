@@ -91,11 +91,9 @@ namespace BestBlogs.Application.AppServices
             {
                 var commentOnDb = await _commentRepository.AddAsync(requestViewModel);
                 if (commentOnDb == null)
-                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
+                    return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
 
-                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
-
-                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
+                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
@@ -110,13 +108,13 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var commentOnDb = await _commentRepository.RemoveAsync(id);
+                var commentOnDb = await _commentRepository.GetByIdAsync(id);
                 if (commentOnDb == null)
-                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comment removed"));
+                    return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().NotFound(new ErrorResponseViewModel("No comment removed"));
 
-                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+                await _commentRepository.RemoveAsync(commentOnDb);
 
-                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
+                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(new SuccessResponseViewModel("Excluído com sucesso")); throw new NotImplementedException();
             }
             catch (Exception ex)
             {
