@@ -2,8 +2,10 @@
 using BestBlogs.Application.Interfaces;
 using BestBlogs.Application.ViewModels.Comments;
 using BestBlogs.Application.ViewModels.Commons;
+using BestBlogs.Domain.Entities;
 using BestBlogs.Domain.Models;
 using BestBlogs.Infra.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
@@ -47,10 +49,11 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var commentOnDb = await _commentRepository.GetByPostIdAsync(postId);
+                var commentOnDb = await _commentRepository.GetByIdAsync(postId);
                 if (commentOnDb == null)
                     return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("Comment not found"));
 
+                //TODO - PRECISA CONFIGURAR O MAPPER
                 var vm = _mapper.Map<CommentViewModel>(commentOnDb);
 
                 return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
@@ -68,13 +71,14 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var commentOnDb = _commentRepository.GetAll();
-                if (commentOnDb == null)
-                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
+                var commentsOnDb = _commentRepository.GetAll();
+                if (commentsOnDb == null)
+                    return new Either<ErrorResponseViewModel, CommentResponseViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
 
-                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+                //TODO - PRECISA CONFIGURAR O MAPEAMENTO
+                var vm = _mapper.Map<CommentResponseViewModel>(commentsOnDb);
 
-                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
+                return new Either<ErrorResponseViewModel, CommentResponseViewModel>().Ok(vm);
             }
             catch (Exception ex)
             {
@@ -89,11 +93,14 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var commentOnDb = await _commentRepository.AddAsync(requestViewModel);
-                if (commentOnDb == null)
-                    return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().NotFound(new ErrorResponseViewModel("No comments found"));
+                //TODO - SERIA LEGAL VERIFICAR SE JA EXISTE NO BANCO
 
-                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(vm);
+                //TODO - PRECISA CONFIGURAR O MAPEAMENTO
+                var vm = _mapper.Map<Comment>(requestViewModel);
+
+                await _commentRepository.AddAsync(vm);
+
+                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(new SuccessResponseViewModel("Adicionado com sucesso"));
             }
             catch (Exception ex)
             {
@@ -114,7 +121,7 @@ namespace BestBlogs.Application.AppServices
 
                 await _commentRepository.RemoveAsync(commentOnDb);
 
-                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(new SuccessResponseViewModel("Excluído com sucesso")); throw new NotImplementedException();
+                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(new SuccessResponseViewModel("Excluído com sucesso")); 
             }
             catch (Exception ex)
             {
@@ -129,13 +136,15 @@ namespace BestBlogs.Application.AppServices
         {
             try
             {
-                var commentOnDb = await _commentRepository.UpdateAsync(id);
+                var commentOnDb = await _commentRepository.GetByIdAsync(id);
                 if (commentOnDb == null)
-                    return new Either<ErrorResponseViewModel, CommentViewModel>().NotFound(new ErrorResponseViewModel("No comment updated"));
+                    return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().NotFound(new ErrorResponseViewModel("No comment not found"));
 
-                var vm = _mapper.Map<CommentViewModel>(commentOnDb);
+                //TODO - PRECISA ATUALIZAR OS VALORES PELO PASSADO NA VIEW MODEL
 
-                return new Either<ErrorResponseViewModel, CommentViewModel>().Ok(vm);
+                await _commentRepository.UpdateAsync(commentOnDb);
+
+                return new Either<ErrorResponseViewModel, SuccessResponseViewModel>().Ok(new SuccessResponseViewModel("Atualizado com sucesso"));
             }
             catch (Exception ex)
             {
